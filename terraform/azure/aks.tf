@@ -68,8 +68,9 @@ resource "azurerm_kubernetes_cluster" "this" {
     azure_rbac_enabled     = true
   }
 
+
   default_node_pool {
-    name = "system"
+    name = "akssystem"
 
     node_count = 3
     max_count  = 5
@@ -92,7 +93,7 @@ resource "azurerm_kubernetes_cluster" "this" {
     fips_enabled            = false
 
     node_labels = {
-      "cluster.yellowbrick.io/node_type" : "yb-operator",
+      "cluster.yellowbrick.io/node_type" : "akssystem",
       "cluster.yellowbrick.io/hardware_type" : "Standard_D4ds_v5"
     }
   }
@@ -127,13 +128,13 @@ resource "azurerm_kubernetes_cluster" "this" {
   tags = local.tags
 }
 
-resource "azurerm_kubernetes_cluster_node_pool" "monitoring" {
-  name                  = "monitord8v5"
+resource "azurerm_kubernetes_cluster_node_pool" "operator" {
+  name                  = "ybsystem"
   kubernetes_cluster_id = azurerm_kubernetes_cluster.this.id
 
   node_count = 1
-  max_count  = 30
-  min_count  = 0
+  max_count  = 5
+  min_count  = 1
 
   vnet_subnet_id         = azurerm_subnet.default.id
   node_public_ip_enabled = false
@@ -141,7 +142,7 @@ resource "azurerm_kubernetes_cluster_node_pool" "monitoring" {
   auto_scaling_enabled = true
   orchestrator_version = var.aks_version
 
-  vm_size                 = "Standard_D8_v5"
+  vm_size                 = "Standard_D4ds_v5"
   os_disk_size_gb         = 128
   os_disk_type            = "Managed"
   kubelet_disk_type       = "OS"
@@ -151,9 +152,14 @@ resource "azurerm_kubernetes_cluster_node_pool" "monitoring" {
   fips_enabled            = false
 
   node_labels = {
-    "cluster.yellowbrick.io/node_type" : "yb-monitoring-standard",
-    "cluster.yellowbrick.io/hardware_type" : "Standard_D8_v5"
+    "cluster.yellowbrick.io/node_type" : "yb-operator",
+    "cluster.yellowbrick.io/hardware_type" : "Standard_D4ds_v5",
+    "cluster.yellowbrick.io/owned" : "true"
   }
+
+  node_taints = [
+    "cluster.yellowbrick.io/owned=true:NoSchedule"
+  ]
 
   tags = local.tags
 }
