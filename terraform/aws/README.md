@@ -29,3 +29,6 @@ secondary_zone  = "us-west-2b"
 
 Please see `variables.tf` for descriptions for each variable.
 
+## Authentication
+
+For authenticating, please see the [Terraform documentation](https://registry.terraform.io/providers/hashicorp/aws/latest/docs#authentication-and-configuration) that matches your needs.
