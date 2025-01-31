@@ -60,6 +60,29 @@ locals {
 }
 ```
 
+... and add this block to `azurerm_firewall_policy_rule_collection_group.this`:
+
+```hcl
+  nat_rule_collection {
+    name     = "inbound"
+    priority = 100
+    action   = "Dnat"
+
+    dynamic "rule" {
+      for_each = local.firewall_nat_rules
+      content {
+        name                = rule.value["name"]
+        protocols           = rule.value["protocols"]
+        source_addresses    = rule.value["source_addresses"]
+        destination_address = rule.value["destination_address"]
+        destination_ports   = rule.value["destination_ports"]
+        translated_address  = rule.value["translated_address"]
+        translated_port     = rule.value["translated_port"]
+      }
+    }
+  }
+```
+
 ## Creating a tfvars file
 
 A typical installation will require the following variables:
