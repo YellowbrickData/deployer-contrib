@@ -94,3 +94,6 @@ azure_resource_group_id          = "/subscriptions/subscription-id/resourceGroup
 
 Please see `variables.tf` for descriptions for each variable.
 
+## Authentication
+
+For authenticating, please see the [Terraform strategy](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/guides/azure_cli) that matches your needs.
