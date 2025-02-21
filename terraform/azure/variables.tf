@@ -1,5 +1,5 @@
 locals {
-  azure_registry_name     = join("", [local.instance_name, sha1(var.azure_resource_group_id)])
+  azure_registry_name     = substr(join("", [local.instance_name, sha1(var.azure_resource_group_id)]), 0, 50)
   azure_resource_group    = element(local.azure_resource_group_id, length(local.azure_resource_group_id) - 1)
   azure_resource_group_id = split("/", var.azure_resource_group_id)
   instance_name           = var.instance_name
