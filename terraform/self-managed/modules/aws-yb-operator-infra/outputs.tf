@@ -1,18 +1,18 @@
-output "diags_bucket_name" {
-  description = "S3 bucket name for yb-diags"
-  value       = var.diags_bucket_name == "" ? aws_s3_bucket.diags[0].bucket : var.diags_bucket_name
-
-  depends_on = [
-    aws_s3_bucket_policy.diags
-  ]
-}
-
 output "yb_compute_cluster_role_arn" {
   description = "IAM role ARN for yb-worker"
   value       = aws_iam_role.compute_cluster.arn
 
   depends_on = [
     aws_iam_role_policy.compute_cluster
+  ]
+}
+
+output "yb_diags_bucket_name" {
+  description = "S3 bucket name for yb-diags"
+  value       = var.diags_bucket_name == "" ? aws_s3_bucket.diags[0].bucket : var.diags_bucket_name
+
+  depends_on = [
+    aws_s3_bucket_policy.diags
   ]
 }
 

@@ -27,6 +27,10 @@ resource "aws_launch_template" "this" {
   }
 }
 
+data "aws_launch_template" "this" {
+  name = aws_launch_template.this.name
+}
+
 resource "aws_eks_node_group" "this" {
   count = 1
 
@@ -39,8 +43,8 @@ resource "aws_eks_node_group" "this" {
   tags            = var.tags
 
   launch_template {
-    id      = aws_launch_template.this.id
-    version = "$Default"
+    id      = data.aws_launch_template.this.id
+    version = data.aws_launch_template.this.default_version
   }
 
   lifecycle {
@@ -52,9 +56,9 @@ resource "aws_eks_node_group" "this" {
   dynamic "taint" {
     for_each = var.taints
     content {
-      effect = value.effect
-      key    = value.key
-      value  = value.value
+      effect = taint.value.effect
+      key    = taint.value.key
+      value  = taint.value.value
     }
   }
 

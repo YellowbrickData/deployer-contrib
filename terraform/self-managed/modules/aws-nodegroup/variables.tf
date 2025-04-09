@@ -81,10 +81,9 @@ variable "tags" {
 
 variable "taints" {
   type = list(object({
-    effect   = string
-    key      = string
-    value    = string
-    operator = string
+    effect = string
+    key    = string
+    value  = string
   }))
   description = "List of taints to apply to the node group."
   default     = []
