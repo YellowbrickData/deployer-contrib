@@ -2,6 +2,8 @@ data "aws_eks_cluster" "this" {
   name = var.cluster_name
 }
 
+data "aws_partition" "current" {}
+
 variable "ami_id" {
   description = "The AMI ID to use for the operator node group."
   type        = string
@@ -38,6 +40,7 @@ variable "node_key_name" {
 variable "node_role_arn" {
   description = "The ARN of the IAM role to use for the node group."
   type        = string
+  default     = null
 }
 
 variable "oidc_provider" {
