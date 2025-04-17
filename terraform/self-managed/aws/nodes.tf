@@ -61,7 +61,7 @@ data "cloudinit_config" "simple" {
 
   part {
     content_type = "text/cloud-config"
-    content = templatefile("./assets/user-data-simple.yml.tpl", {
+    content = templatefile("${path.module}/assets/user-data-simple.yml.tpl", {
       certificate_authority = data.aws_eks_cluster.this.certificate_authority[0].data
       cluster_endpoint      = data.aws_eks_cluster.this.endpoint
       cluster_name          = data.aws_eks_cluster.this.id
