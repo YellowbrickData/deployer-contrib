@@ -17,9 +17,9 @@ variable "node_role_arn" {
 }
 
 variable "diags_bucket_name" {
-  description = "The name of the S3 bucket for diagnostics."
+  description = "The name of the S3 bucket for diagnostics. If not provided, a new bucket will be created."
   type        = string
-  default     = ""
+  default     = null
 }
 
 variable "oidc_provider" {

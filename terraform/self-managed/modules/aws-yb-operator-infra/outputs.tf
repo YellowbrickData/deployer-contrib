@@ -9,7 +9,7 @@ output "yb_compute_cluster_role_arn" {
 
 output "yb_diags_bucket_name" {
   description = "S3 bucket name for yb-diags"
-  value       = var.diags_bucket_name == "" ? aws_s3_bucket.diags[0].bucket : var.diags_bucket_name
+  value       = local.diags_bucket_name
 
   depends_on = [
     aws_s3_bucket_policy.diags

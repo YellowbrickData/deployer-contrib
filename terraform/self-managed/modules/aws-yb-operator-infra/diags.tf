@@ -9,7 +9,7 @@ locals {
   account_id_short = substr(local.account_id_sha1, 0, 8)
 
   # The final bucket name, ensuring it remains all-lowercase
-  diags_bucket_name = var.diags_bucket_name == "" ? "yb-diags-${local.clean_cluster_name}-${local.account_id_short}-${lower(var.region)}" : var.diags_bucket_name
+  diags_bucket_name = var.diags_bucket_name == null ? "yb-diags-${local.clean_cluster_name}-${local.account_id_short}-${lower(var.region)}" : var.diags_bucket_name
 }
 
 resource "aws_iam_role" "diags" {
@@ -54,7 +54,7 @@ resource "aws_iam_role_policy" "diags" {
 }
 
 resource "aws_s3_bucket" "diags" {
-  count = var.diags_bucket_name == "" ? 1 : 0
+  count = var.diags_bucket_name == null ? 1 : 0
 
   bucket = local.diags_bucket_name
   tags   = var.tags
@@ -65,7 +65,7 @@ resource "aws_s3_bucket" "diags" {
 }
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "diags" {
-  count = var.diags_bucket_name == "" ? 1 : 0
+  count = var.diags_bucket_name == null ? 1 : 0
 
   bucket = aws_s3_bucket.diags[0].bucket
 
@@ -77,7 +77,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "diags" {
 }
 
 data "aws_iam_policy_document" "diags_deny_insecure_transport" {
-  count = var.diags_bucket_name == "" ? 1 : 0
+  count = var.diags_bucket_name == null ? 1 : 0
 
   statement {
     sid     = "Deny non-TLS"
@@ -100,7 +100,7 @@ data "aws_iam_policy_document" "diags_deny_insecure_transport" {
 }
 
 resource "aws_s3_bucket_policy" "diags" {
-  count = var.diags_bucket_name == "" ? 1 : 0
+  count = var.diags_bucket_name == null ? 1 : 0
 
   bucket = aws_s3_bucket.diags[0].id
   policy = data.aws_iam_policy_document.diags_deny_insecure_transport[0].json

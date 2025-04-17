@@ -9,6 +9,12 @@ variable "ami_id" {
   type        = string
 }
 
+variable "diags_bucket_name" {
+  description = "The name of the diagnostics bucket. If not given, a new bucket will be created with the YB Operator support infrastructure."
+  type        = string
+  default     = null
+}
+
 variable "cert_manager_version" {
   description = "The version of the cert-manager addon to install."
   type        = string
@@ -32,13 +38,55 @@ variable "cluster_name" {
   type        = string
 }
 
+variable "create_cert_manager" {
+  description = "Whether to create the cert-manager addon."
+  type        = bool
+  default     = true
+}
+
+variable "create_cluster_autoscaler_infra" {
+  description = "Whether to create the cluster autoscaler supporting infrastructure."
+  type        = bool
+  default     = true
+}
+
+variable "create_node_role" {
+  description = "Whether to create the node IAM role."
+  type        = bool
+  default     = true
+}
+
+variable "create_observability_infra" {
+  description = "Whether to create the observability supporting infrastructure."
+  type        = bool
+  default     = true
+}
+
+variable "create_placement_group" {
+  description = "Whether to create the placement group."
+  type        = bool
+  default     = true
+}
+
+variable "create_yb_operator_infra" {
+  description = "Whether to create the YB Operator supporting infrastructure."
+  type        = bool
+  default     = true
+}
+
+variable "create_yb_operator_node_group" {
+  description = "Whether to create the YB Operator node group."
+  type        = bool
+  default     = true
+}
+
 variable "node_group_subnet_id" {
-  description = "The subnet ID for the operator nodegroup. This subnet AZ will also be considered the primary AZ."
+  description = "The subnet ID for the operator node group. This subnet AZ will also be considered the primary AZ."
   type        = string
 }
 
 variable "node_key_name" {
-  description = "The key name to use for the operator nodegroup."
+  description = "The key name to use for the operator node group."
   type        = string
   default     = ""
 }

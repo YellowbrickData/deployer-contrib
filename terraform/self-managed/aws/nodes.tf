@@ -1,10 +1,10 @@
 locals {
-  node_role_arn      = var.node_role_arn == null ? aws_iam_role.node[0].arn : var.node_role_arn
+  node_role_arn      = (var.node_role_arn == null && var.create_node_role) ? aws_iam_role.node[0].arn : var.node_role_arn
   security_group_ids = length(var.security_group_ids) == 0 ? [data.aws_eks_cluster.this.vpc_config[0].cluster_security_group_id] : var.security_group_ids
 }
 
 resource "aws_iam_role" "node" {
-  count = var.node_role_arn == null ? 1 : 0
+  count = (var.node_role_arn == null && var.create_node_role) ? 1 : 0
 
   name = "yb-eks-node-${data.aws_eks_cluster.this.name}-${var.region}"
 
@@ -25,28 +25,28 @@ POLICY
 }
 
 resource "aws_iam_role_policy_attachment" "node_role_AmazonEKSWorkerNodePolicy" {
-  count = var.node_role_arn == null ? 1 : 0
+  count = (var.node_role_arn == null && var.create_node_role) ? 1 : 0
 
   policy_arn = "arn:${data.aws_partition.current.partition}:iam::aws:policy/AmazonEKSWorkerNodePolicy"
   role       = aws_iam_role.node[0].name
 }
 
 resource "aws_iam_role_policy_attachment" "node_role_AmazonEC2ContainerRegistryPullOnly" {
-  count = var.node_role_arn == null ? 1 : 0
+  count = (var.node_role_arn == null && var.create_node_role) ? 1 : 0
 
   policy_arn = "arn:${data.aws_partition.current.partition}:iam::aws:policy/AmazonEC2ContainerRegistryPullOnly"
   role       = aws_iam_role.node[0].name
 }
 
 resource "aws_iam_role_policy_attachment" "node_role_AmazonEKSCNIPolicy" {
-  count = var.node_role_arn == null ? 1 : 0
+  count = (var.node_role_arn == null && var.create_node_role) ? 1 : 0
 
   policy_arn = "arn:${data.aws_partition.current.partition}:iam::aws:policy/AmazonEKS_CNI_Policy"
   role       = aws_iam_role.node[0].name
 }
 
 resource "aws_eks_access_entry" "node" {
-  count = var.node_role_arn == null ? 1 : 0
+  count = (var.node_role_arn == null && var.create_node_role) ? 1 : 0
 
   cluster_name  = var.cluster_name
   principal_arn = aws_iam_role.node[0].arn
@@ -72,6 +72,8 @@ data "cloudinit_config" "simple" {
 
 module "yb_operator_nodegroup" {
   source = "./modules/aws-nodegroup"
+
+  count = var.create_yb_operator_node_group ? 1 : 0
 
   ami_id               = var.ami_id
   cluster_name         = var.cluster_name
