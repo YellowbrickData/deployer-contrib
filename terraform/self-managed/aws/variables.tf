@@ -58,10 +58,6 @@ variable "region" {
   type = string
 }
 
-variable "registry" {
-  type = string
-}
-
 variable "security_group_ids" {
   type    = list(string)
   default = []
