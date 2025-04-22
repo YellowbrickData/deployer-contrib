@@ -31,7 +31,7 @@ resource "aws_iam_role_policy" "manager_diags_download" {
         "Action" : [
           "s3:GetObject"
         ],
-        "Resource" : "arn:${data.aws_partition.current.partition}:s3:::${var.diags_bucket_name}/*"
+        "Resource" : "arn:${data.aws_partition.current.partition}:s3:::${local.diags_bucket_name}/*"
       }
     ]
   })
