@@ -3,7 +3,7 @@ module "observability_infra" {
 
   cluster_name      = var.cluster_name
   diags_bucket_name = module.yb_operator_infra.yb_diags_bucket_name
-  namespace         = var.cluster_autoscaler_namespace
+  namespace         = var.observability_namespace
   oidc_provider     = var.oidc_provider
   region            = var.region
 

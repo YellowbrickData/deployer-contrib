@@ -21,6 +21,12 @@ variable "cluster_autoscaler_namespace" {
   default     = "kube-system"
 }
 
+variable "observability_namespace" {
+  description = "The namespace for the observability components."
+  type        = string
+  default     = "yb-monitoring"
+}
+
 variable "cluster_name" {
   description = "The EKS cluster name."
   type        = string
