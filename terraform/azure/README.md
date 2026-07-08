@@ -83,6 +83,12 @@ locals {
   }
 ```
 
+## Deployer permissions
+
+The deployer's identity (the installer VM's managed identity or a dedicated service principal) must be granted the custom role described in the [Yellowbrick Azure installation permissions documentation](https://docs.yellowbrick.com/latest/platforms/cloud/ee/cloud_install/cloud_install_permissions_azure.html), typically scoped to the resource group.
+
+Note that in-place upgrades re-assert the AKS cluster's user-assigned identity (created by this Terraform as `<instance_name>-cluster`), which requires the deployer to hold `Microsoft.ManagedIdentity/userAssignedIdentities/assign/action` on that identity. This action is included in the documented custom role. If the deployer was granted an older version of the role that lacks it, either update the role definition to match the current documentation, or assign the built-in `Managed Identity Operator` role to the deployer, scoped to the cluster identity — otherwise upgrades fail with `LinkedAuthorizationFailed`.
+
 ## Creating a tfvars file
 
 A typical installation will require the following variables:
