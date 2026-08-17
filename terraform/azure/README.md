@@ -100,6 +100,24 @@ azure_resource_group_id          = "/subscriptions/subscription-id/resourceGroup
 
 Please see `variables.tf` for descriptions for each variable.
 
+## Azure Government
+
+To deploy into Azure Government, select the Government cloud and a Government region in your tfvars:
+
+```
+azure_environment = "usgovernment"
+azure_location    = "usgovvirginia"
+```
+
+All cloud-dependent endpoints and DNS zone names — the firewall egress FQDNs, the ARM and Entra login endpoints, the blob DNS suffix, and the AKS and container registry private-link zones — are resolved from `azure_environment`; no edits to the resources are required. The required Government egress FQDNs are listed in the "Azure US Government" section of the [Azure documentation](https://learn.microsoft.com/en-us/azure/aks/outbound-rules-control-egress) referenced above.
+
+The operator running Terraform must be logged in to the Government cloud:
+
+```
+az cloud set --name AzureUSGovernment
+az login
+```
+
 ## Authentication
 
 For authenticating, please see the [Terraform strategy](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/guides/azure_cli) that matches your needs.

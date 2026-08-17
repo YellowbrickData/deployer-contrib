@@ -1,16 +1,22 @@
 locals {
-  # https://learn.microsoft.com/en-us/azure/aks/outbound-rules-control-egress#azure-global-required-fqdn--application-rules
-  hosts_required_install = [
-    "*.data.mcr.microsoft.com",
-    "*.hcp.${var.azure_location}.azmk8s.io",
-    "acs-mirror.azureedge.net",
-    "login.microsoftonline.com",
-    "management.azure.com",
-    "mcr-0001.mcr-msedge.net",
-    "mcr.microsoft.com",
-  ]
+  # https://learn.microsoft.com/en-us/azure/aks/outbound-rules-control-egress
+  # (ms.date 2026-06-18; the doc has a dedicated "Azure US Government" section
+  # for the Government-cloud required FQDNs.)
+  # "mcr-0001.mcr-msedge.net" is listed only in the commercial required table.
+  hosts_required_install = concat(
+    [
+      "*.data.mcr.microsoft.com",
+      "*.hcp.${var.azure_location}.${local.aks_zone_suffix}",
+      "acs-mirror.azureedge.net",
+      local.login_endpoint,
+      local.arm_endpoint,
+      "mcr.microsoft.com",
+      "packages.aks.azure.com",
+    ],
+    local.is_gov ? [] : ["mcr-0001.mcr-msedge.net"],
+  )
   host_required_provision = [
-    "*.blob.core.windows.net",
+    "*.${local.blob_dns_suffix}",
     "aka.ms",
     "azure.archive.ubuntu.com",
     "packages.microsoft.com",

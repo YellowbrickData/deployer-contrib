@@ -4,6 +4,14 @@ locals {
   azure_resource_group_id = split("/", var.azure_resource_group_id)
   instance_name           = var.instance_name
 
+  # Cloud-dependent endpoint resolution, driven by var.azure_environment.
+  is_gov               = var.azure_environment == "usgovernment"
+  arm_endpoint         = local.is_gov ? "management.usgovcloudapi.net" : "management.azure.com"
+  login_endpoint       = local.is_gov ? "login.microsoftonline.us" : "login.microsoftonline.com"
+  blob_dns_suffix      = local.is_gov ? "blob.core.usgovcloudapi.net" : "blob.core.windows.net"
+  aks_zone_suffix      = local.is_gov ? "cx.aks.containerservice.azure.us" : "azmk8s.io"
+  acr_privatelink_zone = local.is_gov ? "privatelink.azurecr.us" : "privatelink.azurecr.io"
+
   tags = {
     cluster_yellowbrick_io_creator = "yb-install"
     cluster_yellowbrick_io_owner   = "yb-install"
@@ -32,6 +40,17 @@ variable "aks_version" {
   type        = string
   default     = "1.30"
   description = "The version of the Kubernetes cluster to deploy."
+}
+
+variable "azure_environment" {
+  type        = string
+  default     = "public"
+  description = "The Azure cloud environment to deploy into. Supported values: public, usgovernment."
+
+  validation {
+    condition     = contains(["public", "usgovernment"], var.azure_environment)
+    error_message = "azure_environment must be \"public\" or \"usgovernment\"."
+  }
 }
 
 variable "azure_firewall_sku_tier" {

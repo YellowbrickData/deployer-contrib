@@ -1,5 +1,5 @@
 resource "azurerm_private_dns_zone" "privatelink_acr" {
-  name                = "privatelink.azurecr.io"
+  name                = local.acr_privatelink_zone
   resource_group_name = local.azure_resource_group
 
   tags = local.tags
@@ -15,7 +15,7 @@ resource "azurerm_private_dns_zone_virtual_network_link" "privatelink_acr" {
 }
 
 resource "azurerm_private_dns_zone" "privatelink_aks" {
-  name                = "privatelink.${var.azure_location}.azmk8s.io"
+  name                = "privatelink.${var.azure_location}.${local.aks_zone_suffix}"
   resource_group_name = local.azure_resource_group
 
   tags = local.tags
